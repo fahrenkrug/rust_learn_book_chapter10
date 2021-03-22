@@ -1,7 +1,13 @@
+use std::fmt::Display;
+
+mod lifetime;
+
 mod generics {
-    fn largest<T: std::cmp::PartialOrd + Copy>(list: &[T]) -> &T {
+    use std::cmp::PartialOrd;
+
+    fn largest<T: PartialOrd + Copy>(list: &[T]) -> &T {
         let mut largest = &list[0];
-        for &item in list {
+        for item in list {
             if item > largest {
                 largest = item;
             }
@@ -83,7 +89,6 @@ mod generics {
 
 mod traits {
     use std::fmt::Debug;
-    use std::iter::Sum;
 
     trait Summary {
         fn summarize(&self) -> String;
@@ -246,7 +251,7 @@ mod traits {
 
     fn example_trait_as_return() {
         let summary = get_summary();
-        println!(summary.summarize());
+        println!("{}", summary.summarize());
     }
 
     pub fn example() {
@@ -260,4 +265,15 @@ mod traits {
 fn main() {
     generics::example();
     traits::example();
+    lifetime::example();
+    all_in_one("bla", "blub", 234);
+}
+
+fn all_in_one<'a, T>(x: &'a str, y: &'a str, ann: T) -> &'a str where T: Display {
+    println!("Announce: {}", ann);
+    if x.len() > y.len() {
+        x
+    } else {
+        y
+    }
 }
